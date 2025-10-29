@@ -279,13 +279,25 @@ const App = () => {
         `http://localhost:5000/download/${downloadToken}`,
         { responseType: "blob" }
       );
+
+      // Get the filename from the server's response headers
+      const contentDisposition = res.headers["content-disposition"];
+      let filename = "vidsnip-edited-video.mp4"; // A default filename
+
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (filenameMatch && filenameMatch.length === 2) {
+          filename = filenameMatch[1]; 
+        }
+      }
+
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const a = document.createElement("a");
       a.href = url;
-      a.download = "processed-video.mp4";
+      a.download = filename; // Use the filename from the server
       a.click();
       window.URL.revokeObjectURL(url);
-      setDownloadToken(""); // reset token
+      setDownloadToken("");
       toast.success("Download started", { icon: "⬇️" });
     } catch (err) {
       toast.error("Failed to download video");
