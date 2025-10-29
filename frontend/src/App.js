@@ -190,17 +190,20 @@ const App = () => {
     toast("Segment removed", { icon: "🗑️" });
   };
 
-  // --- Format time ---
+  // --- Format time with milliseconds ---
   const formatTime = (seconds) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60);
+    const ms = Math.floor((seconds % 1) * 1000);
 
     if (h > 0)
       return `${h}:${m.toString().padStart(2, "0")}:${s
         .toString()
-        .padStart(2, "0")}`;
-    return `${m}:${s.toString().padStart(2, "0")}`;
+        .padStart(2, "0")}.${ms.toString().padStart(3, "0")}`;
+    return `${m}:${s.toString().padStart(2, "0")}.${ms
+      .toString()
+      .padStart(3, "0")}`;
   };
 
   // --- Upload video ---
@@ -383,9 +386,7 @@ const App = () => {
                 />
               </svg>
             </div>
-            <h1 className="text-2xl font-bold text-white">
-              VidSnip
-            </h1>
+            <h1 className="text-2xl font-bold text-white">VidSnip</h1>
           </div>
           <div className="flex items-center space-x-2">
             <div className="badge badge-outline bg-gray-800 bg-opacity-60 text-gray-300 border-gray-700 px-3 py-4">
@@ -487,9 +488,7 @@ const App = () => {
             </div>
             {!videoFile && (
               <div className="text-center mt-4 text-gray-400">
-                <p>
-                  Drag and drop a video file here or click the button above
-                </p>
+                <p>Drag and drop a video file here or click the button above</p>
               </div>
             )}
           </div>
@@ -567,9 +566,7 @@ const App = () => {
                         <span className="font-mono text-lg">
                           {formatTime(currentTime)}
                         </span>
-                        <span className="mx-2 text-gray-500">
-                          /
-                        </span>
+                        <span className="mx-2 text-gray-500">/</span>
                         <span className="font-mono text-lg text-gray-400">
                           {formatTime(videoDuration)}
                         </span>
@@ -608,16 +605,7 @@ const App = () => {
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.3 }}
                           whileHover={{ scale: 1.05 }}
-                          onMouseEnter={() => setHoveredSegment(index)}
-                          onMouseLeave={() => setHoveredSegment(null)}
-                        >
-                          {hoveredSegment === index && (
-                            <div className="absolute -top-8 left-0 bg-gray-900 bg-opacity-90 text-white text-xs px-2 py-1 rounded shadow-lg">
-                              {formatTime(segment.start)} -{" "}
-                              {formatTime(segment.end)}
-                            </div>
-                          )}
-                        </motion.div>
+                        />
                       ))}
                       {isSelecting && (
                         <motion.div
@@ -664,7 +652,7 @@ const App = () => {
                       type="range"
                       min="0"
                       max={videoDuration}
-                      step="0.1"
+                      step="0.01" // Changed to 0.01 for more precise seeking
                       value={currentTime}
                       onChange={handleSeek}
                       className="w-full mt-2 slider"
@@ -792,14 +780,14 @@ const App = () => {
                       {segments.map((segment, index) => (
                         <motion.div
                           key={index}
-                          className="flex items-center justify-between p-3 bg-gray-800 bg-opacity-40 rounded-lg backdrop-blur-sm border border-gray-700"
+                          className="flex items-center justify-between p-3 bg-gray-800 bg-opacity-40 rounded-lg backdrop-blur-sm border border-gray-700 m-2"
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20 }}
                           transition={{ duration: 0.3 }}
                           whileHover={{
-                            scale: 1.02,
                             backgroundColor: "rgba(55, 65, 81, 0.6)",
+                            boxShadow: "0 0px 10px rgba(255, 255, 255, 0.3)",
                           }}
                         >
                           <div className="flex items-center gap-3">
@@ -990,6 +978,6 @@ const App = () => {
       `}</style>
     </div>
   );
-}
+};
 
 export default App;
