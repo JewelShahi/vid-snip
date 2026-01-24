@@ -1,6 +1,11 @@
 {
-  "name": "my-monorepo-root",
-  "version": "1.0.0",
+  "name": "vidsnip-monorepo",
   "private": true,
-  "dependencies": {}
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "cd backend && npm install && cd ../frontend && npm install && CI=false npm run build"
+  }
 }
