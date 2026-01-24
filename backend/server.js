@@ -14,10 +14,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Directories
-const uploadsDir = "/tmp/uploads";
-const outputDir = "/tmp/output";
-const tempDir = "/tmp/temp";
+// Local directories
+const uploadsDir = path.join(__dirname, "uploads");
+const outputDir  = path.join(__dirname, "output");
+const tempDir    = path.join(__dirname, "temp");
+
 
 // Ensure directories exist
 [uploadsDir, outputDir, tempDir].forEach((dir) => {
@@ -329,4 +330,6 @@ app.post("/cleanup", (req, res) => {
   res.json({ message: "Client files cleaned" });
 });
 
-export default app;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
