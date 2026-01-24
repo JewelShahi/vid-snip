@@ -45,7 +45,7 @@ const App = () => {
     if (!savedId) {
       const getClientId = async () => {
         try {
-          const res = await axios.get("http://localhost:5000/client-id");
+          const res = await axios.get("/client-id");
           savedId = res.data.clientId;
           localStorage.setItem("clientId", savedId);
           setClientId(savedId);
@@ -216,7 +216,7 @@ const App = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/upload",
+        "/upload",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -252,7 +252,7 @@ const App = () => {
       const filename = await uploadVideo();
       if (!filename) return setIsProcessing(false);
 
-      const response = await axios.post("http://localhost:5000/process", {
+      const response = await axios.post("/process", {
         filename,
         segments,
         clientId,
@@ -276,7 +276,7 @@ const App = () => {
     if (!downloadToken) return;
     try {
       const res = await axios.get(
-        `http://localhost:5000/download/${downloadToken}`,
+        `/download/${downloadToken}`,
         { responseType: "blob" }
       );
 
@@ -309,7 +309,7 @@ const App = () => {
   const handleCleanup = async () => {
     if (!clientId) return;
     try {
-      await axios.post("http://localhost:5000/cleanup", { clientId });
+      await axios.post("/cleanup", { clientId });
       toast.success("Files cleaned up successfully");
       setVideoFile(null);
       setVideoUrl("");
