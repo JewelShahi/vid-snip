@@ -233,7 +233,6 @@ app.post("/process", async (req, res) => {
     // Process segments sequentially with RE-ENCODING for reliability
     for (let i = 0; i < segments.length; i++) {
       const seg = segments[i];
-      // NOTE: We are now re-encoding instead of using '-c copy'.
       // This is slower but much more reliable and creates valid, playable segments.
       const cmd = `"${ffmpeg}" -i "${inputPath}" -ss ${seg.start} -to ${seg.end} -c:v libx264 -c:a aac -preset fast -crf 23 -avoid_negative_ts make_zero "${tempFiles[i]}"`;
 
@@ -317,7 +316,6 @@ app.get("/download/:token", (req, res) => {
     // Cleanup after download
     if (fileData) fileData.inUse = false;
     // Optionally delete the file immediately after download
-    // deleteFile(data.filename, 'output');
     downloadTokens.delete(token);
   });
 });
