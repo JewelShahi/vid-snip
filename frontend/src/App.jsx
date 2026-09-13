@@ -41,7 +41,11 @@ const App = () => {
 
   // --- Persist client ID ---
   useEffect(() => {
+
+    // Load cleint id from local storage
     let savedId = localStorage.getItem("clientId");
+
+    // if doent have generate one and save it
     if (!savedId) {
       const getClientId = async () => {
         try {
